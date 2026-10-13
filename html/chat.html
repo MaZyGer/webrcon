@@ -1,17 +1,268 @@
 <div ng-controller="ChatController" id="ChatController">
+    <label>
+        <input type="checkbox"
+               ng-model="ShowServerMessages"
+               ng-change="ApplyFilter()">
+        Servernachrichten anzeigen
+    </label>
 
-    <div style="height: 600px" class="Output scrollable">
+    <select class="form-control" style="margin-bottom: 6px"
+            ng-model="SelectedUser"
+            ng-change="ApplyFilter()">
+
+        <option value="">Alle Spieler</option>
+        <option ng-repeat="user in Users" value="{{user}}">
+            {{user}}
+        </option>
+    </select>
+    <div style="height: 510px" class="Output scrollable">
     	<div ng-repeat="line in Output" ng-class="line.Class">
-    		<span style="min-width: 60px; display:inline-block;">{{(line.Time * 1000) | date:'shortTime'}}</span>
-			<span style="min-width: 130px; display:inline-block; text-align: right;"><a href="#/{{address}}/player/{{line.UserId}}/">{{line.Username}} :</a></span> 
-			<span style="display:inline-block;">{{line.Message}}</span>
+            <div ng-if="!line.IsServer" class="portlet portlet-default">
+                <div id="chat" class="panel-collapse collapse in">
+                    <div>
+                    <div class="portlet-body chat-widget" style="width: auto;">
+                        <div class="row" style="margin-right: 0px">
+                            <div class="col-lg-12">
+                                <div class="media">
+                                    <a class="pull-left" href="#">
+                                        <img class="media-object img-circle img-chat" ng-src="{{ line.Avatar ? line.Avatar : 'image/noimage.png' }}" alt="">
+                                    </a>
+                                    
+                                    <div class="media-body">
+                                        <h4 class="media-heading"> 
+                                            <a href="#/{{address}}/player/{{line.UserId}}/">{{ line.Username }}</a> 
+                                            <span class="small">{{(line.Time * 1000) | date:'[dd.MM.yyyy] HH:mm'}}</span>
+                                        </h4>
+                                        <p>{{line.Message}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    </div>
+                </div>
+            </div>
+    		
+            <span ng-style="" ng-if="line.IsServer">
+                <span style="min-width: 60px; display:inline-block;">{{(line.Time * 1000) | date:'[dd.MM.yyyy] HH:mm'}}</span>
+                <span style="min-width: 130px; display:inline-block; text-align: right;">
+                    <a href="#/{{address}}/player/{{line.UserId}}/" style="color: inherit;" ng-style="{ 'color': line.Username === 'Server' ? line.Color : 'inherit'}" >
+                        {{ line.Username }}:
+                    </a>
+                </span>
+                <span ng-style="{'color': line.Username === 'Server' ? line.Color : 'inherit'}"  style="display:inline-block;">
+                    {{line.Message}}
+                </span>
+            </span>
     	</div>
     </div>
 
-	<form ng-submit="SubmitCommand()" class="md-inline-form">
-			<div>
-				<input class="form-control" ng-model="Command" style="width: 100%">
-			</div>
-	</form>
+    <form ng-submit="SubmitCommand()" class="md-inline-form">
+
+        <div style="margin-bottom: 6px;">
+            <label>
+                <input type="checkbox" ng-model="UseAdvancedMessage">
+                Erweiterte Servernachricht
+            </label>
+        </div>
+
+        <div ng-show="UseAdvancedMessage"
+             style="display: flex; gap: 6px; margin-bottom: 6px;">
+
+            <label style="margin: 0; white-space: nowrap;">
+                Sendername:
+            </label>
+            
+            <input type="text"
+                   class="form-control"
+                   ng-model="MessageSender"
+                   placeholder="Sendername"
+                   ng-keydown="$event.keyCode === 13 && $event.preventDefault()"
+                   style="flex: 1;">
+
+            <select class="form-control"
+                    ng-model="MessageType"
+                    ng-options="type.Id as type.Name for type in MessageTypes"
+                    style="flex: 1;">
+            </select>
+
+        </div>
+
+        <div>
+            <input type="text"
+                   class="form-control"
+                   ng-model="Command"
+                   placeholder="Nachricht..."
+                   style="width: 100%">
+        </div>
+
+        <button type="submit" style="display: none;"></button>
+
+    </form>
 
 </div>
+
+<style type="text/css">
+.portlet {
+    border-bottom: 1px solid;
+}
+
+.btn-white {
+    border-color: #cccccc;
+    color: #333333;
+    background-color: #ffffff;
+}
+
+
+.portlet .portlet-heading {
+    padding: 0 15px;
+}
+
+.portlet .portlet-heading h4 {
+    padding: 1px 0;
+    font-size: 16px;
+}
+
+.portlet .portlet-heading a {
+    
+}
+
+.portlet .portlet-heading a:hover,
+.portlet .portlet-heading a:active,
+.portlet .portlet-heading a:focus {
+    outline: none;
+}
+
+.portlet .portlet-widgets .dropdown-menu a {
+    color: #333;
+}
+
+.portlet .portlet-widgets ul.dropdown-menu {
+    min-width: 0;
+}
+
+.portlet .portlet-heading .portlet-title {
+    float: left;
+}
+
+.portlet .portlet-heading .portlet-title h4 {
+    margin: 10px 0;
+}
+
+.portlet .portlet-heading .portlet-widgets {
+    float: right;
+    margin: 8px 0;
+}
+
+.portlet .portlet-heading .portlet-widgets .tabbed-portlets {
+    display: inline;
+}
+
+.portlet .portlet-heading .portlet-widgets .divider {
+    margin: 0 5px;
+}
+
+.portlet .portlet-body {
+    padding: 7px;
+}
+
+.portlet .portlet-footer {
+    padding: 10px 15px;
+}
+
+.portlet .portlet-footer ul {
+    margin: 0;
+}
+
+.portlet-green,
+.portlet-green>.portlet-heading {
+    border-color: #16a085;
+}
+
+.portlet-green>.portlet-heading {
+    color: #fff;
+    background-color: #16a085;
+}
+
+.portlet-orange,
+.portlet-orange>.portlet-heading {
+    border-color: #f39c12;
+}
+
+.portlet-orange>.portlet-heading {
+    color: #fff;
+    background-color: #f39c12;
+}
+
+.portlet-blue,
+.portlet-blue>.portlet-heading {
+    border-color: #2980b9;
+}
+
+.portlet-blue>.portlet-heading {
+    color: #fff;
+    background-color: #2980b9;
+}
+
+.portlet-red,
+.portlet-red>.portlet-heading {
+    border-color: #e74c3c;
+}
+
+.portlet-red>.portlet-heading {
+    color: #fff;
+    background-color: #e74c3c;
+}
+
+.portlet-purple,
+.portlet-purple>.portlet-heading {
+    border-color: #8e44ad;
+}
+
+.portlet-purple>.portlet-heading {
+    color: #fff;
+    background-color: #8e44ad;
+}
+
+.portlet-default,
+.portlet-dark-blue,
+.portlet-default>.portlet-heading,
+.portlet-dark-blue>.portlet-heading {
+    border-color: #34495e;
+}
+
+.portlet-default>.portlet-heading,
+.portlet-dark-blue>.portlet-heading {
+    color: #fff;
+    background-color: #34495e;
+}
+
+.portlet-basic,
+.portlet-basic>.portlet-heading {
+    border-color: #333;
+}
+
+.portlet-basic>.portlet-heading {
+    border-bottom: 1px solid #333;
+    color: #333;
+    background-color: #fff;
+}
+
+.img-chat{
+    width:40px;
+    height:40px;
+}
+
+.text-green {
+    color: #16a085;
+}
+
+.text-orange {
+    color: #f39c12;
+}
+
+.text-red {
+    color: #e74c3c;
+}
+</style>

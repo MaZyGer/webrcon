@@ -89,6 +89,12 @@ a:hover
 	text-shadow: none;
 }
 
+.form-control option
+{
+    background-color: #434857;
+    color: #cfd2da;
+}
+
 .btn-default:hover 
 {
 	background: #1ca8dd;

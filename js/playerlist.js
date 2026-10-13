@@ -5,6 +5,7 @@ function PlayerListController( $scope, rconService, $interval )
 {
 	$scope.Output = [];
 	$scope.OrderBy = '-ConnectedSeconds';
+    $scope.HideSensitiveData = true;
 
 	$scope.Refresh = function ()
 	{
@@ -38,6 +39,11 @@ function PlayerListController( $scope, rconService, $interval )
 
 		$scope.Refresh();
 	}
+    
+    $scope.ToggleAddress = function (player)
+    {
+        player.ShowAddress = !player.ShowAddress;
+    }
 
 	rconService.InstallService( $scope, $scope.Refresh )
 

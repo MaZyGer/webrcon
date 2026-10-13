@@ -48,65 +48,82 @@ function ServerInfoController($scope, rconService, $routeParams, $interval) {
     data: []
   };
 
-  $scope.performanceChart = {
-    options: {
-      chart: {
-        type: 'multiChart',
-        height: 200,
-        margin: {
-          top: 30,
-          right: 75,
-          bottom: 40,
-          left: 75
+    $scope.performanceChart = {
+        options: {
+            chart: {
+                type: 'multiChart',
+                height: 200,
+                margin: {
+                    top: 30,
+                    right: 75,
+                    bottom: 40,
+                    left: 75
+                },
+
+                color: [
+                    'darkred', 'yellowgreen'
+                ],
+
+                duration: 0,
+
+                lines1: {
+                    duration: 0
+                },
+
+                lines2: {
+                    duration: 0
+                },
+
+                useInteractiveGuideline: true,
+
+                interactiveLayer: {
+                    tooltip: {
+                        headerFormatter: function(d) {
+                            return d3.time.format('%H:%M:%S')(new Date(d));
+                        }
+                    }
+                },
+
+                yAxis1: {
+                    axisLabel: 'Framerate',
+                    tickFormat: function(d) {
+                        return d3.format(',.2f')(d);
+                    }
+                },
+
+                yAxis2: {
+                    axisLabel: 'Memory',
+                    tickFormat: function(d) {
+                        return d3.format('.2f')(d / 1024) + ' GB';
+                    }
+                },
+
+                xAxis: {
+                    axisLabel: "Time",
+                    tickFormat: function(d) {
+                        return d3.time.format('%H:%M:%S')(new Date(d));
+                    }
+                }
+            }
         },
-        color: [
-          'darkred', 'yellowgreen'
-        ],
-        duration: 0,
-        lines1: {
-          duration: 0
-        },
-        lines2: {
-          duration: 0
-        },
-        useInteractiveGuideline: true,
-        yAxis1: {
-          axisLabel: 'Framerate',
-          tickFormat: function(d) {
-            return d3.format(',d')(d);
-          }
-        },
-        yAxis2: {
-          axisLabel: 'Entities',
-          tickFormat: function(d) {
-            return d3.format(',d')(d);
-          },
-          // axisLabelDistance: 12
-        },
-        xAxis: {
-          axisLabel: "Time",
-          tickFormat: function(d) {
-            return d3.time.format('%H:%M:%S')(new Date(d))
-          }
-        }
-      }
-    },
-    data: [
-      {
-        key: 'Framerate',
-        type: "line",
-        duration: 0,
-        yAxis: 1,
-        values: []
-      }, {
-        key: 'Entities',
-        type: 'line',
-        duration: 0,
-        yAxis: 2,
-        values: []
-      }
-    ]
-  };
+
+        data: [
+            {
+                key: 'Framerate',
+                type: 'line',
+                duration: 0,
+                yAxis: 1,
+                values: []
+            },
+            {
+                key: 'Memory',
+                type: 'line',
+                duration: 0,
+                yAxis: 2,
+                values: []
+            }
+        ]
+    };
 
   $scope.netChart = {
     options: {
@@ -215,7 +232,7 @@ function ServerInfoController($scope, rconService, $routeParams, $interval) {
     for (var i = 0; i < recordedData.length; i++) {
       var record = recordedData[i];
       fpsChartValues.push({x: record.ts, y: record.data.Framerate});
-      entChartValues.push({x: record.ts, y: record.data.EntityCount});
+      entChartValues.push({x: record.ts, y: record.data.Memory});
 
       netInChartValues.push({x: record.ts, y: record.data.NetworkIn});
       netOutChartValues.push({x: record.ts, y: record.data.NetworkOut});

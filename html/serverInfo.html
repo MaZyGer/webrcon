@@ -7,11 +7,18 @@
 		</div>
 
 		<div class="col-sm-4" ng-repeat="(key, value) in serverinfo">
-			<p>
-				<span class="text-muted">{{key}}:</span>
-				<span>{{value}}</span>
-			</p>
-		</div>
+            <p>
+                <span class="text-muted">{{key}}:</span>
+
+                <span ng-if="key === 'Memory'">
+                    {{ (value / 1024) | number:2 }} GB
+                </span>
+
+                <span ng-if="key !== 'Memory'">
+                    {{value}}
+                </span>
+            </p>
+        </div>
 
 	</div>
 	<div class="row">

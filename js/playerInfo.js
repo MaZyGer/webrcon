@@ -17,6 +17,8 @@ function PlayerInfoController( $scope, rconService, $routeParams )
 					// set player data
 					$scope.info = players[i];
 
+                    
+
 					// remove xp remnants
 					if ($scope.info['CurrentLevel'] !== undefined)
 						delete $scope.info['CurrentLevel'];

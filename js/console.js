@@ -64,7 +64,7 @@ function ConsoleController( $scope, rconService, $timeout )
 
 	$scope.OnMessage = function( msg )
 	{
-		
+      
 		if ( msg.Message.startsWith( "[rcon] " ) ) {
 			return;	
 		}
@@ -78,7 +78,7 @@ function ConsoleController( $scope, rconService, $timeout )
 				break;
 
 			default: 
-				console.log( msg );
+				//console.log( msg );
 				return;
 		}
 	}
