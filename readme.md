@@ -1,1 +1,1 @@
-This webrcon is optimized and made slightly design changing for the game avorion
+Optimized performance and slightly updated web design for Avorion
